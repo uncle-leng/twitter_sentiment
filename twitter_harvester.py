@@ -4,9 +4,11 @@ import json
 import time
 
 server = Server('http://127.0.0.1:5984/')
-if 'testdb' in server:
-    del server['testdb']
-db = server.create('testdb')
+if 'testdb' not in server:
+    db = server.create('testdb')
+else:
+    db = server['testdb']
+
 
 consumer_key = 'sbCkN1SwzlbOUgBWJkhCLChvD'
 consumer_secret = 'eO3HsqhfYGHRBQwsIKA39Wv9DGQH5dwza6dCUkbB8LcCKQAycB'

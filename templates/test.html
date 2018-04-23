@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+    <title>Title</title>
+</head>
+<body>
+
+    <script type="text/javascript">
+
+        $.ajax({
+            type: 'POST',
+            async: true,
+            dataType: 'json',
+            url: '../test/',
+            data: {
+                'csrfmiddlewaretoken': '{{ csrf_token }}',
+            },
+            success: function(result) {
+                alert(result);
+            },
+            error: function() {
+                alert('error!');
+            }
+        })
+
+    </script>
+
+</body>
+</html>
