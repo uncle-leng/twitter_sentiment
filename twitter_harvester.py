@@ -42,7 +42,7 @@ while True:
                         db.save(each_twitter_json)
             except Exception:
                 continue
-    time.sleep(5)
+        time.sleep(5)
 
 
 
