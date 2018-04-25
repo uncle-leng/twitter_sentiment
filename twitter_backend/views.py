@@ -17,9 +17,6 @@ def test(request):
         return render(request, 'test.html')
     if request.method == 'POST':
         x = {'haha': 'sdfgdfgf'}
-        view = documents.view('_all_docs')
-        for each in view:
-            print(view)
         return HttpResponse(json.dumps(x))
 
 

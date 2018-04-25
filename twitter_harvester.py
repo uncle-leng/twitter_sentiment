@@ -3,7 +3,9 @@ import tweepy
 import json
 import time
 
-server = Server('http://127.0.0.1:5984/')
+
+cities = ['Sydney', 'Melbourne', 'Brisbane', 'Perth', 'Adelaide', 'Canberra', 'Hobart', 'Gold Coast']
+server = Server('http://root:root@127.0.0.1:5984/')
 if 'testdb' not in server:
     db = server.create('testdb')
 else:
@@ -18,20 +20,27 @@ access_token_secret = 'HWwSavuqAXCcZGU276OCcVU8Pc7ZbMc4DwaithOerpOEr'
 auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
 auth.set_access_token(access_token, access_token_secret)
 api = tweepy.API(auth, wait_on_rate_limit=True, wait_on_rate_limit_notify=True)
-
+#places = api.geo_search(query="Australia", granularity="country")
+#place_id = places[0].id
 while True:
     for each_twitter in tweepy.Cursor(api.search,
                                 q='* -filter:retweets',
+                                #q="place:%s" % place_id,
                                 count=100,
-                                geocode='-37.184,144.96,1000km').items(100):
+                                geocode='-26.745,134.97,2400km'
+                                      ).items(100):
         if 'RT @' not in each_twitter.text:
             try:
                 each_twitter_id = each_twitter.id_str
                 each_twitter_json = each_twitter._json
+                for city in cities:
+                    if city in each_twitter_json['user']['location']:
+
                 #tmp = {each_twitter_id: each_twitter_json}
-                each_twitter_json['_id'] = each_twitter_id
-                db.save(each_twitter_json)
-            except ResourceConflict:
+                        each_twitter_json['_id'] = each_twitter_id
+                        each_twitter_json['city_location'] = city
+                        db.save(each_twitter_json)
+            except Exception:
                 continue
     time.sleep(5)
 
