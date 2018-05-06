@@ -3,7 +3,10 @@
 # This program is used to create connection with NeCTAR and complete the initial setup of instances
 
 import boto
+import argparse
+from pprint import pprint
 import os
+import time
 from boto.ec2.regioninfo import RegionInfo
 
 # Create the region object to specify the endpoint and availability zone.
