@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en" >
+
+<head>
+  <meta charset="UTF-8">
+  <title>Sentiment Analysis With Aurin</title>
+    <link rel="stylesheet" href="css/style.css">
+<style>
+    #container2 {
+        background-color: transparent;
+        position: absolute;
+        bottom: 0px;
+        width:50%;
+        left: 25%;
+        z-index: 1}
+    #map-canvas {
+        height: 100%;
+        width: 100%;
+        position:absolute;
+        top: 0;
+        left: 0;
+        z-index: 0; /* Set z-index to 0 as it will be on a layer below the contact form */
+    }
+
+
+</style>
+    <script type="text/javascript"
+            src="https://maps.googleapis.com/maps/api/js?sensor=false&key=AIzaSyA09P5fGAvdUAO9GKyDZrNN4NGS_MN6FmI">
+    </script>
+    <!--<script>-->
+
+        <!--var citymap = {-->
+            <!--Sydney: {-->
+                <!--center: {lat: -33.865143, lng: 151.209900},-->
+            <!--},-->
+            <!--Perth: {-->
+                <!--center: {lat: -31.953512, lng: 115.857048},-->
+            <!--},-->
+            <!--Brisbane: {-->
+                <!--center: {lat: -27.470125, lng: 153.021072},-->
+            <!--},-->
+            <!--Melbourne: {-->
+                <!--center: {lat: -37.81, lng: 144.96},-->
+            <!--},-->
+            <!--Adelaide: {-->
+                <!--center: {lat: -34.93, lng: 138.6 },-->
+            <!--}-->
+        <!--};-->
+        <!--var addListenersOnCircle = function(polygon) {-->
+            <!--google.maps.event.addListener(polygon, 'm', function (event) {-->
+                <!--alert(polygon.index);-->
+            <!--});-->
+        <!--}-->
+        <!--function initMap() {-->
+            <!--// Create the map.-->
+            <!--var map = new google.maps.Map(document.getElementById('googlemaps'), {-->
+                <!--zoom: 4,-->
+                <!--center: {lat: -22.75, lng: 133.79},-->
+                <!--mapTypeId: 'hybrid'-->
+            <!--});-->
+
+            <!--// Construct the circle for each value in citymap.-->
+            <!--// Note: We scale the area of the circle based on the population.-->
+            <!--for (var city in citymap) {-->
+                <!--// Add the circle for this city to the map.-->
+                <!--var cityCircle = new google.maps.Circle({-->
+                    <!--strokeColor: '#FF0000',-->
+                    <!--strokeOpacity: 0.8,-->
+                    <!--strokeWeight: 2,-->
+                    <!--fillColor: '#FF0000',-->
+                    <!--fillOpacity: 0.35,-->
+                    <!--map: map,-->
+                    <!--center: citymap[city].center,-->
+                    <!--radius: 100000,-->
+                    <!--index: city-->
+                <!--});-->
+                <!--addListenersOnCircle(cityCircle);-->
+            <!--}-->
+        <!--}-->
+        <!--google.maps.event.addDomListener(window, 'load', initMap);-->
+
+    <!--</script>-->
+</head>
+
+<body>
+
+  <div id="container2" ></div>
+  <script src='http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
+<script src='https://code.highcharts.com/highcharts.js'></script>
+<script src='https://code.highcharts.com/modules/exporting.js'></script>
+
+  
+
+    <script  src="js/map_aurin.js"></script>
+
+<!--<div id="googlemaps">-->
+    <!--<script src="js/formap.js" type="text/javascript"></script>-->
+
+<!--</div>-->
+
+
+  <!--<script src="https://maps.googleapis.com/maps/api/js?sensor=false&key=AIzaSyA09P5fGAvdUAO9GKyDZrNN4NGS_MN6FmI"></script>-->
+
+  <!--<div id="map-canvas"></div>-->
+  <!--<script src="https://maps.googleapis.com/maps/api/js?sensor=false&key=AIzaSyA09P5fGAvdUAO9GKyDZrNN4NGS_MN6FmI"></script>-->
+
+
+
+  <!--<script  src="js/formap.js"></script>-->
+
+
+  <script src="//d3js.org/d3.v3.min.js"></script>
+
+
+  <script src="https://maps.googleapis.com/maps/api/js?sensor=false&key=AIzaSyA09P5fGAvdUAO9GKyDZrNN4NGS_MN6FmI"></script>
+
+  <div id="map-canvas">
+      <script>
+          var map;
+          var des;
+
+          d3.csv("morley.csv", function(data) {
+              des = data[0];
+              console.log(data[0].City);
+          });
+
+          var MY_MAPTYPE_ID = 'custom_style';
+
+          function initialize() {
+
+              var featureOpts = [
+                  {
+                      stylers: [
+                          {hue: '#87CEFA'},
+                          {visibility: 'simplified'},
+                          {gamma: 0.5},
+                          {weight: 0.5}
+                      ]
+                  },
+                  {
+                      elementType: 'labels',
+                      stylers: [
+                          {visibility: 'off'}
+                      ]
+                  },
+                  {
+                      featureType: 'water',
+                      stylers: [
+                          {color: '#0878be'}
+                      ]
+                  }
+              ];
+              var citymap = {
+                  Sydney: {
+                      center: {lat: -33.865143, lng: 151.209900},
+                  },
+                  Perth: {
+                      center: {lat: -31.953512, lng: 115.857048},
+                  },
+                  Brisbane: {
+                      center: {lat: -27.470125, lng: 153.021072},
+                  },
+                  Melbourne: {
+                      center: {lat: -37.81, lng: 144.96},
+                  },
+                  Canberra: {
+                      center: {lat: -35.34, lng: 149.08},
+                  }
+              };
+              var infowindow = new google.maps.InfoWindow({
+                  content: "nothing"
+              });
+
+              // var addListenersOnCircle = function(polygon) {
+              //     google.maps.event.addListener(polygon, 'mouseover', function (event) {
+              //         infoWindow.setPosition(polygon.getCenter());
+              //         infoWindow.open(map);
+              //     });
+              // };
+
+              var mapOptions = {
+                  zoom: 5,
+                  center: {lat: -41, lng: 134},
+                  mapTypeControlOptions: {
+                      mapTypeIds: [google.maps.MapTypeId.ROADMAP, MY_MAPTYPE_ID]
+                  },
+                  mapTypeId: MY_MAPTYPE_ID
+              };
+
+              map = new google.maps.Map(document.getElementById('map-canvas'),
+                  mapOptions);
+
+              var styledMapOptions = {
+                  name: 'Custom Style'
+              };
+
+              var customMapType = new google.maps.StyledMapType(featureOpts, styledMapOptions);
+
+              map.mapTypes.set(MY_MAPTYPE_ID, customMapType);
+
+              for (var city in citymap) {
+                  // Add the circle for this city to the map.
+                  var cityCircle = new google.maps.Circle({
+                      strokeColor: '#464046',
+                      strokeOpacity: 0.5,
+                      strokeWeight: 2,
+                      fillColor: '#464046',
+                      fillOpacity: 0.5,
+                      map: map,
+                      center: citymap[city].center,
+                      radius: 100000,
+                      index: city
+                  });
+                  // addListenersOnCircle(cityCircle);
+                  google.maps.event.addListener(cityCircle, 'mouseover', function (ev) {
+                      infowindow.setPosition(this.getCenter());
+                      infowindow.setContent('<div><strong>' + this.index + '</strong></div>');
+                      infowindow.open(map);
+                  });
+                  google.maps.event.addListener(cityCircle, 'mouseout', function (ev) {
+                      infowindow.close();
+                  });
+
+
+              }
+          }
+
+          google.maps.event.addDomListener(window, 'load', initialize);
+
+
+
+      </script>
+  </div>
+
+
+
+</body>
+
+</html>
