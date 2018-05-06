@@ -14,8 +14,8 @@ region = RegionInfo(name='melbourne', endpoint='nova.rc.nectar.org.au')
 
 # The access key and secret key are used to connect to NeCTAR
 # To get these credentials, log in to NeCTAR dashboard -> Project -> Access & Security -> API Access -> View Credentials
-access_key = '1f8c696991734d63b1f4ecc8c46d143b'
-secret_key = '1920c39d3bf742bf9edb0dc479047dae'
+access_key = 'replace this with credentials info'
+secret_key = 'replace this with credentials info'
 
 Availiability_Zone = 'melbourne-qh2'
 Default_Image_ID = 'ami-190a1773'
