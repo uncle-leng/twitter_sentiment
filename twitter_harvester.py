@@ -5,7 +5,7 @@ import time
 
 
 cities = ['Sydney', 'Melbourne', 'Brisbane', 'Perth', 'Adelaide', 'Canberra', 'Hobart', 'Gold Coast']
-server = Server('http://root:root@127.0.0.1:5984/')
+server = Server('http://admin:cccgroup27@127.0.0.1:5984/')
 if 'testdb' not in server:
     db = server.create('testdb')
 else:
