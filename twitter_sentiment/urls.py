@@ -20,5 +20,8 @@ from twitter_backend import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.index),
-    path('test/', views.test)
+    path('test/', views.test),
+    path('cities/', views.cities),
+    path('map_aurin/', views.map_aurin),
+    path('cities/map_jpg', views.map_jpg),
 ]
