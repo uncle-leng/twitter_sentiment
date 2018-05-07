@@ -1,7 +1,7 @@
 [master]
-node1 ansible_ssh_host=115.146.85.177 ansible_user=ubuntu ansible_ssh_private_key_file=/etc/ansible/cloudkey.pem
+node1 ansible_ssh_host=115.146.86.7 ansible_user=ubuntu ansible_ssh_private_key_file=/etc/ansible/cloudkey.pem
 [cluster]
-ubuntu@115.146.85.177 ansible_ssh_private_key_file=/etc/ansible/cloudkey.pem
-ubuntu@115.146.86.48 ansible_ssh_private_key_file=/etc/ansible/cloudkey.pem
+ubuntu@115.146.86.7 ansible_ssh_private_key_file=/etc/ansible/cloudkey.pem
+ubuntu@115.146.86.213 ansible_ssh_private_key_file=/etc/ansible/cloudkey.pem
 [othernodes]
-node2 ansible_ssh_host=115.146.86.48 ansible_user=ubuntu ansible_ssh_private_key_file=/etc/ansible/cloudkey.pem
+node2 ansible_ssh_host=115.146.86.213 ansible_user=ubuntu ansible_ssh_private_key_file=/etc/ansible/cloudkey.pem
