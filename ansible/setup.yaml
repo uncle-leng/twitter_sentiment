@@ -1,0 +1,118 @@
+# Ansible version 2.5.0
+# This playbook is to automatically deploy the Twitter CouchDB cluster to harvest Twitter data.
+
+# step 1: basic setup on each instance
+- name: setup instances
+  hosts: cluster
+  remote_user: root
+  sudo: true
+  tasks:
+    - name: update
+      command: sudo apt-get update
+    - name: insall git
+      command: sudo apt install git -y
+    - name: get the repo from github
+      sudo: yes
+      git: repo=https://github.com/uncle-leng/twitter_sentiment.git
+        dest=/home/ubuntu/project
+        clone=yes
+    - name: cp environment to /etc/environment
+      become: yes
+      shell: sudo cp /home/ubuntu/project/ansible/environment /etc/
+    - name: install pip
+      command: sudo apt install python-pip -y
+    - name: install docker 1
+      command: sudo apt-get install apt-transport-https ca-certificates curl software-properties-common -y
+    - name: install docker 2
+      shell: curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+    - name: install docker 3
+      shell: sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+    - name: install docker 4
+      command: sudo apt-get update
+    - name: install docker 5
+      command: sudo apt-get install docker-ce -y
+    - name: config docker 1
+      command: sudo groupadd docker
+      ignore_errors: yes
+    - name: config docker 2
+      command: sudo usermod -aG docker $USER
+    - name: config docker 3
+      command: sudo systemctl enable docker
+
+# step 2
+- name: run docker on master node
+  hosts: master
+  remote_user: root
+  sudo: true
+  tasks:
+    - name: docker couchdb container
+      command: docker run -p 5984:5984 -p 4369:4369 -p 5986:5986 -p 9100-9200:9100-9200 --name couch_master -e COUCHDB_USER=admin -e COUCHDB_PASSWORD=cccgroup27 -e NODENAME={{ hostvars['node1'].ansible_ssh_host}} -v /home/ubuntu/project:/opt/couchdb/data -d apache/couchdb:2.1.1
+
+# step 3
+- name: run docker on other nodes
+  hosts: othernodes
+  remote_user: root
+  sudo: true
+  tasks:
+    - name: docker couchdb container
+      command: docker run -p 5984:5984 -p 4369:4369 -p 5986:5986 -p 9100-9200:9100-9200 --name couch_node2 -e COUCHDB_USER=admin -e COUCHDB_PASSWORD=cccgroup27 -e NODENAME={{ hostvars['node2'].ansible_ssh_host}} -v /home/ubuntu/project:/opt/couchdb/data -d apache/couchdb:2.1.1
+
+
+# step 4
+- name: setup cluster
+  hosts: master
+  remote_user: root
+  sudo: true
+  tasks:
+    - name: sleep for 30 seconds and continue with play
+      wait_for: timeout=30
+    - name: setup cluster step 1
+      shell: 'curl -X POST -H "Content-Type: application/json" http://admin:cccgroup27@127.0.0.1:5984/_cluster_setup -d "{\"action\": \"enable_cluster\", \"bind_address\":\"0.0.0.0\", \"username\": \"admin\", \"password\":\"cccgroup27\", \"port\": 5984, \"node_count\": \"2\"}"'
+    - name: setup cluster step 2
+      shell: 'curl -X POST -H "Content-Type: application/json" http://admin:cccgroup27@127.0.0.1:5984/_cluster_setup -d "{\"action\": \"enable_cluster\", \"bind_address\":\"0.0.0.0\", \"username\": \"admin\", \"password\":\"cccgroup27\", \"port\": 5984, \"node_count\": \"2\", \"remote_node\": \"{{ hostvars["node2"].ansible_ssh_host}}\", \"remote_current_user\": \"admin\", \"remote_current_password\": \"cccgroup27\"}"'
+    - name: setup cluster step 3
+      shell: 'curl -X POST -H "Content-Type: application/json" http://admin:cccgroup27@127.0.0.1:5984/_cluster_setup -d "{\"action\": \"add_node\", \"host\":\"{{ hostvars["node2"].ansible_ssh_host}}\", \"port\": 5984, \"username\": \"admin\", \"password\":\"cccgroup27\"}"'
+    - name: setup cluster step 4
+      shell: 'curl -X POST "http://admin:cccgroup27@localhost:5984/_cluster_setup" -H "Content-Type: application/json" -d "{\"action\": \"finish_cluster\"}"'
+    - name: setup cluster step 5
+      shell: 'curl http://admin:cccgroup27@localhost:5984/_cluster_setup'
+    - name: verify the cluster setup
+      shell: 'curl -X GET http://admin:cccgroup27@localhost:5984/_membership'
+      register: cluster
+    - debug: msg="{{ cluster.stdout }}"
+
+# step 5 go into docker container and start to harvest Twitter
+- name: docker container master
+  hosts: cluster
+  remote_user: root
+  sudo: true
+  tasks:
+    - name: show container
+      command: docker ps
+      register: containerlist
+    - debug: msg="{{containerlist.stdout_lines[1].split(' ')[0].strip()}}"
+    - set_fact: string_container_id="{{containerlist.stdout_lines[1].split(' ')[0].strip()}}"
+    - name: in docker container apt-get update
+      command: docker exec -i {{string_container_id}} /bin/bash -c 'apt-get update'
+    - name: in docker container install python-dev
+      command: docker exec -i {{string_container_id}} /bin/bash -c 'apt-get install python-dev -y'
+    - name: in docker container install python-pip
+      command: docker exec -i {{string_container_id}} /bin/bash -c 'apt-get install python-pip -y'
+    - name: in docker container install git
+      command: docker exec -i {{string_container_id}} /bin/bash -c 'apt-get install git -y'
+    - name: in docker container pip install couchdb
+      command: docker exec -i {{string_container_id}} /bin/bash -c 'pip install couchdb'
+      ignore_errors: yes
+    - name: in docker container pip install tweepy
+      command: docker exec -i {{string_container_id}} /bin/bash -c 'pip install tweepy'
+      ignore_errors: yes
+    - name: in docker container get the repo from github
+      command: docker exec -i {{string_container_id}} /bin/bash -c 'git clone https://github.com/uncle-leng/twitter_sentiment.git'
+    - name: in docker container replace the couchdb config file
+      command: docker exec -i {{string_container_id}} /bin/bash -c 'cp /opt/couchdb/twitter_sentiment/ansible/local.ini /opt/couchdb/etc/local.ini'
+    - name: in docker container install screen
+      command: docker exec -i {{string_container_id}} /bin/bash -c 'apt-get install screen'
+    - name: in docker container run twitter harvester
+      command: docker exec -i {{string_container_id}} /bin/bash -c 'cd /opt/couchdb/twitter_sentiment ; screen -dm python twitter_harvester.py'
+
+

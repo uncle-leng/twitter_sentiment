@@ -6,6 +6,7 @@ import boto
 import argparse
 from pprint import pprint
 import os
+import errno
 import time
 from boto.ec2.regioninfo import RegionInfo
 
@@ -14,8 +15,8 @@ region = RegionInfo(name='melbourne', endpoint='nova.rc.nectar.org.au')
 
 # The access key and secret key are used to connect to NeCTAR
 # To get these credentials, log in to NeCTAR dashboard -> Project -> Access & Security -> API Access -> View Credentials
-access_key = 'replace this with credentials info'
-secret_key = 'replace this with credentials info'
+access_key = '1f8c696991734d63b1f4ecc8c46d143b'
+secret_key = '1920c39d3bf742bf9edb0dc479047dae'
 
 Availiability_Zone = 'melbourne-qh2'
 Default_Image_ID = 'ami-190a1773'
@@ -40,6 +41,53 @@ def get_instance(instance_id):
 def terminate_instance(instance_id):
     return get_instance(instance_id).terminate()
 
+def instance_status(instance_id, status, wait_loop = 50):
+    init_loop = 0
+    while init_loop < wait_loop:
+        time.sleep(5)
+        if get_instance(instance_id).state == status and get_instance(instance_id).private_ip_address is not None:
+            print(get_instance(instance_id).private_ip_address)
+            return True
+        init_loop = init_loop + 1
+    return False
+
+def get_hosts(instances):
+    hosts = []
+    node = 1
+    for i in instances:
+        if instance_status(i.id, 'running'):
+            hosts.append(get_instance(i.id).private_ip_address)
+            name = "Node"+str(node)
+            get_instance(i.id).add_tag("Name", name)
+            node = node + 1
+    print(hosts)
+    return hosts
+
+def write_to_hosts(hosts):
+    try:
+        os.remove('/etc/ansible/hosts')
+    except OSError as e:
+        if e.errno != errno.ENOENT: #no such file or directory
+            # re-raise exception if a different error occurred
+            raise
+    # web_host = hosts[0]
+    master = hosts[0]
+    node_index = 1
+    with open('/etc/ansible/hosts', 'a') as f:
+        f.write("[master]"+"\n")
+        f.write("node"+str(node_index)+" "+"ansible_ssh_host="+master+" "+"ansible_user=ubuntu ansible_ssh_private_key_file=/etc/ansible/cloudkey.pem"+"\n")
+        f.write("[cluster]"+"\n")
+        for ip in hosts:
+            f.write("ubuntu@"+ip+" "+"ansible_user=ubuntu ansible_ssh_private_key_file=/etc/ansible/cloudkey.pem"+"\n")
+        f.write("[othernodes]"+"\n")
+        for ip in hosts:
+            if ip is hosts[0]:
+                continue
+            else:
+                node_index = node_index + 1
+                f.write("node"+str(node_index)+" "+"ansible_ssh_host="+ip+" "+"ansible_user=ubuntu ansible_ssh_private_key_file=/etc/ansible/cloudkey.pem"+"\n")
+    f.close()
+
 def create_instances(num_instance, max_loop = 10):
 	instance_list = []
 	for i in range(num_instance):
@@ -52,7 +100,12 @@ def create_instances(num_instance, max_loop = 10):
 				placement=Availiability_Zone)
 		)
 	instances = map(lambda x: x.instances[0], instance_list)
+	print instances
+	hosts = get_hosts(instances)
+	# print hosts
+	write_to_hosts(hosts)
 
+# create_instances(2)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
