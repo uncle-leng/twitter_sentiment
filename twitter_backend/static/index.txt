@@ -1,0 +1,29 @@
+<div class="el__text_content">What feelings do Australian people intend to express on social media
+                <br> Are they as happy as we expected?</br>
+              <br>In order to quantified this, we pick 5 cities to analyse their sentiment scores. Meanwhile,
+                Melbourne, Canberra, Sydney, Perth and Brisbane, are most likely to have vivid tweeter user around Australia.
+              <br>The data came from Tweeter, collected in latest week</div>
+
+///////////////////////////////
+<div class="el__text_content">Now we've seen different cities have different sentiment scores.
+                <br>And this may vary greatly...</br>
+                <br>There're several artifacts which might influence how people feel. We generally suppose this might related
+                with unemployment rate, public transport or education level, but are they?
+                <br>-Data comes from <b>AURIN</b>.</div>
+////////////////////////
+
+<div class="el__text_content"><br>Rather than focusing on a group of people, we intend to give an in-depth
+                investigation at one user.<br/>
+              <br>What does he/she interested in? Which topic does he/she most likely to discuss on social media? We
+                calculated several topics this user mentioned frequently. </div>
+
+////////////////////
+<div class="el__text_content"><br>Social media is a commonly used platform to share personal life and thoughts, meanwhile,
+                it also records details about user behavior.</br>
+                <br>On the basis of scenario 3, combine with time and location information, we can generate a new user portrait
+                to analysis target user.
+              </div>
+///////////////////
+https://images.unsplash.com/photo-1508288155660-625e378b3fc9?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=dc3ee037fcecc5db4b371fe3ee0f87fb&auto=format&fit=crop&w=1950&q=80
+layout_styly.css
+https://images.unsplash.com/photo-1517732306149-e8f829eb588a?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=f01588d10ff9d309abd7cf609fb7e265&auto=format&fit=crop&w=1952&q=80

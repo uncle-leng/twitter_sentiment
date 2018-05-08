@@ -39,7 +39,7 @@ def words(request):
         return render(request, 'words.html')
     else:
         res = []
-        wb = load_workbook("twitter_backend/static/UserWordsofInterest.xlsx")
+        wb = load_workbook("twitter_backend/static/UserWordsofInterestV2.xlsx")
         sheet = wb['Sheet1']
         tmp = []
         for row in sheet.rows:

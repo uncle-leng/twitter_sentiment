@@ -1,7 +1,9 @@
+{% load staticfiles %}
 @import url('s3_reset.css');
+
 /* General Demo Style */
 body{
-    background:#f9f9f9 url({% static 'img/3.jpg'}) ;
+	/*background: url({% static 'img/3.jpg' %});*/
 	color: #333;
 	font-family: Georgia, serif;
 	font-size: 13px;
