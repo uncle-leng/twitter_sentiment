@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django.shortcuts import render
 from django.http import Http404, HttpResponseRedirect, HttpResponse
 from couchdb.client import Server
@@ -45,7 +47,10 @@ def words(request):
         for row in sheet.rows:
             tmp_list = []
             for cell in row:
-                tmp_list.append(cell.value)
+                if isinstance(cell.value, datetime):
+                    tmp_list.append(cell.value.strftime('%Y-%m-%d'))
+                else:
+                    tmp_list.append(cell.value)
             #tuple=[row[0],row[1]]
             tmp.append(tmp_list)
         return HttpResponse(json.dumps({'WordsWithWeight': tmp}))
