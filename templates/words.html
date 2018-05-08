@@ -8,11 +8,13 @@
         <style>
             @import url(https://fonts.googleapis.com/css?family=Josefin+Sans:300,400);
             .showTwitter{
-                font:normal 300 44px/1 'Josefin Sans', sans-serif;
+                padding: -15px 15px;
+                font:normal 300 40px/1 'Josefin Sans', sans-serif;
                 z-index: 1;
                 position: absolute;
                 left: 10px;
                 top:10px;
+                line-height: 40px;
                 border: 2px antiquewhite solid;
                 border-radius: 8px;
                 background: antiquewhite;
@@ -101,10 +103,16 @@
 
             chart.on('mouseover', function(para) {
                         var index=para['dataIndex'];
-                        var str=twitterAndTime[index][0];
-                        var time=twitterAndTime[index][1]
+                        if (index!=0) {
+                            var str = twitterAndTime[index - 1][0];
+                            var time = twitterAndTime[index - 1][1];
+                        }
+                        else {
+                            var str ="These are the Words that could reveal...";
+                            var time = "";
+                        }
 
-                        var twt = $('<div id="twitter" class="showTwitter"><p></p><p id="tweets">""</p><p id="time"></p></div>');
+                        var twt = $('<div id="twitter" class="showTwitter"><p></p><p id="tweets">""</p><p id="time" style="float:right; margin-top:-20px"></p></div>');
 
                         $('body').append(twt);
                         document.getElementById('tweets').innerHTML="\""+str+"\"";
