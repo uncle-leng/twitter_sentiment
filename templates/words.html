@@ -59,7 +59,7 @@
                         }];
             for(var i=0;i<WordsWithWeight.length;i++){
                 data_extract.push({name:WordsWithWeight[i][0], value: WordsWithWeight[i][1]});
-                twitterAndTime.append([])
+                twitterAndTime.push([WordsWithWeight[i][2],WordsWithWeight[i][3]]);
                 var x = 1;
             }
             var chart = echarts.init(document.getElementById('main'));
@@ -100,8 +100,15 @@
             chart.setOption(option);
 
             chart.on('mouseover', function(para) {
-                        var twt = $('<div id="twitter" class="showTwitter"><p></p><p>"welcome，Jame frain, happy birthday, hony~~~!!!"</p><p></p></div>');
+                        var index=para['dataIndex'];
+                        var str=twitterAndTime[index][0];
+                        var time=twitterAndTime[index][1]
+
+                        var twt = $('<div id="twitter" class="showTwitter"><p></p><p id="tweets">""</p><p id="time"></p></div>');
+
                         $('body').append(twt);
+                        document.getElementById('tweets').innerHTML="\""+str+"\"";
+                        document.getElementById('time').innerHTML=time;
 
                     }
                     );

@@ -25,5 +25,6 @@ urlpatterns = [
     path('map_aurin/', views.map_aurin),
     path('cities/map_jpg', views.map_jpg),
     path('twitter_user/', views.twitter_user),
-    path('twitter_user/words/', views.words)
+    path('twitter_user/words/', views.words),
+    path('user_detail/', views.user_detail)
 ]
