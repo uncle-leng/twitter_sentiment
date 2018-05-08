@@ -83,7 +83,8 @@
             chart.setOption(option);
 
             chart.on('mousemove', function(para) {
-                        alert(para);
+                        alert(para['dataIndex']);
+
                     });
 
             window.onresize = chart.resize;
