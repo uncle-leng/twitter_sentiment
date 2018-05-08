@@ -9,7 +9,7 @@ This project is to develop a Cloud-based solution that exploits a multitude of v
 
 To deploy the system and application, the environment requirements are:
 
-- Python 2 or Python 3
+- Python 3
 - [boto](http://boto.cloudhackers.com/en/latest/index.html) package installed
 - [ansible](http://docs.ansible.com/ansible/latest/index.html) >= 2.3.0
 
