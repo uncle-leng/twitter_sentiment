@@ -10,6 +10,12 @@ import json
 def index(request):
     return render(request, 'index.html')
 
+def twitter_user(request):
+    return render(request, 'twitter_user.html')
+
+def words(request):
+    return render(request,'words.html')
+
 def cities(request):
     if 'sentiment' not in request.GET:
         return render(request, 'cities.html')
@@ -28,7 +34,21 @@ def cities(request):
 
 
 
-
+def words(request):
+    if 'sentiment' not in request.GET:
+        return render(request, 'words.html')
+    else:
+        res = []
+        wb = load_workbook("twitter_backend/static/UserWordsofInterest.xlsx")
+        sheet = wb['Sheet1']
+        tmp = []
+        for row in sheet.rows:
+            tmp_list = []
+            for cell in row:
+                tmp_list.append(cell.value)
+            #tuple=[row[0],row[1]]
+            tmp.append(tmp_list)
+        return HttpResponse(json.dumps({'WordsWithWeight': tmp}))
 
 def map_aurin(request):
     if 'sentiment' not in request.GET:

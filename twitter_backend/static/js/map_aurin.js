@@ -1,6 +1,4 @@
 $(function() {
-
-
     $.ajax({
         type: 'GET',
         async: true,
