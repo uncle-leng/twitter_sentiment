@@ -165,7 +165,7 @@ $(function() {
                       },
                   },
                   {
-                      name: "Bachelor",
+                      name: "Bachelor's degree",
                       yAxis:0,
                       type: "spline",
                       data: sentiment_data[1],
