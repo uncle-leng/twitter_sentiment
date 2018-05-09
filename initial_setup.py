@@ -96,7 +96,7 @@ def create_instances(num_instance, max_loop = 10):
 				Default_Image_ID,
 				key_name='cloudkey',
 				instance_type='m1.small',
-				security_groups=['ssh', 'default', 'http', 'icmp', 'couch_cluster'],
+				security_groups=['ssh', 'default', 'couch_cluster'],
 				placement=Availiability_Zone)
 		)
 	instances = map(lambda x: x.instances[0], instance_list)

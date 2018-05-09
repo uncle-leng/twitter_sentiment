@@ -20,7 +20,7 @@
       become: yes
       shell: sudo cp /home/ubuntu/project/ansible/environment /etc/
     - name: install pip
-      command: sudo apt install python-pip -y
+      command: sudo apt install python3-pip -y
     - name: install docker 1
       command: sudo apt-get install apt-transport-https ca-certificates curl software-properties-common -y
     - name: install docker 2
@@ -97,14 +97,20 @@
     - name: in docker container install python-dev
       command: docker exec -i {{string_container_id}} /bin/bash -c 'apt-get install python-dev -y'
     - name: in docker container install python-pip
-      command: docker exec -i {{string_container_id}} /bin/bash -c 'apt-get install python-pip -y'
+      command: docker exec -i {{string_container_id}} /bin/bash -c 'apt-get install python3-pip -y'
     - name: in docker container install git
       command: docker exec -i {{string_container_id}} /bin/bash -c 'apt-get install git -y'
     - name: in docker container pip install couchdb
-      command: docker exec -i {{string_container_id}} /bin/bash -c 'pip install couchdb'
+      command: docker exec -i {{string_container_id}} /bin/bash -c 'pip3 install couchdb'
       ignore_errors: yes
     - name: in docker container pip install tweepy
-      command: docker exec -i {{string_container_id}} /bin/bash -c 'pip install tweepy'
+      command: docker exec -i {{string_container_id}} /bin/bash -c 'pip3 install tweepy'
+      ignore_errors: yes
+    - name: in docker container pip install django
+      command: docker exec -i {{string_container_id}} /bin/bash -c 'pip3 install django'
+      ignore_errors: yes
+    - name: in docker container pip install openpyxl
+      command: docker exec -i {{string_container_id}} /bin/bash -c 'pip3 install openpyxl'
       ignore_errors: yes
     - name: in docker container get the repo from github
       command: docker exec -i {{string_container_id}} /bin/bash -c 'git clone https://github.com/uncle-leng/twitter_sentiment.git'
@@ -113,6 +119,27 @@
     - name: in docker container install screen
       command: docker exec -i {{string_container_id}} /bin/bash -c 'apt-get install screen'
     - name: in docker container run twitter harvester
-      command: docker exec -i {{string_container_id}} /bin/bash -c 'cd /opt/couchdb/twitter_sentiment ; screen -dm python twitter_harvester.py'
+      command: docker exec -i {{string_container_id}} /bin/bash -c 'cd /opt/couchdb/twitter_sentiment ; screen -dm python3 twitter_harvester.py'
+    # - name: in docker container run web server
+      # command: docker exec -i {{string_container_id}} /bin/bash -c 'cd /opt/couchdb/twitter_sentiment ; screen -dm python3 manage.py runserver 0.0.0.0:8000'
 
-
+# setup 5 run web server
+- name: run web server
+  hosts: master
+  remote_user: root
+  sudo: true
+  tasks:
+    - name: install django
+      command: pip3 install django
+    - name: install openpyxl
+      command: pip3 install openpyxl
+    - name: install tweepy
+      command: pip3 install tweepy
+    - name: install couchdb
+      command: pip3 install couchdb
+    - name: install screen
+      command: sudo apt-get install screen
+    - name: go into the project directory
+      command: cd /home/ubuntu/project
+    - name: run web server
+      command: screen -dm python3 manage.py runserver 0.0.0.0:8000
