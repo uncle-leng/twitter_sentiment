@@ -97,7 +97,7 @@
     - name: in docker container install python-dev
       command: docker exec -i {{string_container_id}} /bin/bash -c 'apt-get install python-dev -y'
     - name: in docker container install python-pip
-      command: docker exec -i {{string_container_id}} /bin/bash -c 'apt-get install python-pip3 -y'
+      command: docker exec -i {{string_container_id}} /bin/bash -c 'apt-get install python3-pip -y'
     - name: in docker container install git
       command: docker exec -i {{string_container_id}} /bin/bash -c 'apt-get install git -y'
     - name: in docker container pip install couchdb
