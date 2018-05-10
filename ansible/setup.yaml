@@ -1,5 +1,6 @@
 # Ansible version 2.5.0
 # This playbook is to automatically deploy the Twitter CouchDB cluster to harvest Twitter data.
+# 10 May 2018
 
 # step 1: basic setup on each instance
 - name: setup instances
@@ -20,7 +21,7 @@
       become: yes
       shell: sudo cp /home/ubuntu/project/ansible/environment /etc/
     - name: install pip
-      command: sudo apt install python3-pip -y
+      command: sudo apt install python-pip -y
     - name: install docker 1
       command: sudo apt-get install apt-transport-https ca-certificates curl software-properties-common -y
     - name: install docker 2
@@ -39,7 +40,7 @@
     - name: config docker 3
       command: sudo systemctl enable docker
 
-# step 2
+# step 2 run docker on master node
 - name: run docker on master node
   hosts: master
   remote_user: root
@@ -48,7 +49,7 @@
     - name: docker couchdb container
       command: docker run -p 5984:5984 -p 4369:4369 -p 5986:5986 -p 9100-9200:9100-9200 --name couch_master -e COUCHDB_USER=admin -e COUCHDB_PASSWORD=cccgroup27 -e NODENAME={{ hostvars['node1'].ansible_ssh_host}} -v /home/ubuntu/project:/opt/couchdb/data -d apache/couchdb:2.1.1
 
-# step 3
+# step 3 run docker on other nodes
 - name: run docker on other nodes
   hosts: othernodes
   remote_user: root
@@ -58,7 +59,7 @@
       command: docker run -p 5984:5984 -p 4369:4369 -p 5986:5986 -p 9100-9200:9100-9200 --name couch_node2 -e COUCHDB_USER=admin -e COUCHDB_PASSWORD=cccgroup27 -e NODENAME={{ hostvars['node2'].ansible_ssh_host}} -v /home/ubuntu/project:/opt/couchdb/data -d apache/couchdb:2.1.1
 
 
-# step 4
+# step 4 setup cluster
 - name: setup cluster
   hosts: master
   remote_user: root
@@ -124,22 +125,22 @@
       # command: docker exec -i {{string_container_id}} /bin/bash -c 'cd /opt/couchdb/twitter_sentiment ; screen -dm python3 manage.py runserver 0.0.0.0:8000'
 
 # setup 5 run web server
-- name: run web server
-  hosts: master
-  remote_user: root
-  sudo: true
-  tasks:
-    - name: install django
-      command: pip3 install django
-    - name: install openpyxl
-      command: pip3 install openpyxl
-    - name: install tweepy
-      command: pip3 install tweepy
-    - name: install couchdb
-      command: pip3 install couchdb
-    - name: install screen
-      command: sudo apt-get install screen
-    - name: go into the project directory
-      command: cd /home/ubuntu/project
-    - name: run web server
-      command: screen -dm python3 manage.py runserver 0.0.0.0:8000
+# - name: run web server
+#   hosts: master
+#   remote_user: root
+#   sudo: true
+#   tasks:
+#    - name: install django
+#      command: pip3 install django
+#    - name: install openpyxl
+#      command: pip3 install openpyxl
+#    - name: install tweepy
+#      command: pip3 install tweepy
+#    - name: install couchdb
+#      command: pip3 install couchdb
+#    - name: install screen
+#      command: sudo apt-get install screen
+#    - name: go into the project directory
+#      command: cd /home/ubuntu/project
+#    - name: run web server
+#      command: screen -dm python3 manage.py runserver 0.0.0.0:8000
