@@ -31,6 +31,7 @@ $(function () {
         data: {
             'sentiment': true
         },
+
         success: function(data) {
             //alert(data);
             var tmp = data['sentiment_data'];
@@ -44,31 +45,35 @@ $(function () {
             backgroundColor: null
 
         },
+        event:{
+            height:'120%'
+        },
 
         title: {
             text: null
         },
 
-        legend: {
-            enabled: false
-        },
 
         xAxis: {
             categories: ['Sdyney', 'Melbourne', 'Perth', 'Brisbane', 'Canberra'],
             labels: {
                 style: {
-                    color: 'white'
+                    color: 'black',
+                    fontSize:'22px'
+
                 }
-            },
+            }
         },
 
         yAxis: {
             title: {
-                text: 'Scores'
+                text: 'Scores',
+                fontSize:'22px'
             },
             labels: {
                 style: {
-                    color: 'white'
+                    color: 'black',
+                    fontSize:'22px'
                 }
             },
             plotLines: [{
@@ -79,7 +84,8 @@ $(function () {
                     text: 'Theoretical mean: 0.56',
                     align: 'center',
                     style: {
-                        color: 'white'
+                        color: 'white',
+                        fontSize:'20px'
                     }
                 }
             }]
@@ -87,15 +93,7 @@ $(function () {
 
         series: [{
             name: 'Observations',
-            /*
-            data: [
-                [0.547298825,	0.54785812675,	0.5545942115,	0.55868612725,	0.562121085],
-                [0.53967549,	0.54053145775,	0.5486274905,	0.55249834975,	0.560026674],
-                [0.539315045,	0.5411554255,	0.545523051,	0.5507879295,	0.553709277],
-                [0.545874749,	0.550677098,	0.557441,	0.56024958325,	0.565842275],
-                [0.561038884,	0.5689296165,	0.578829361,	0.59446711575,	0.598591017]
-            ],
-            */
+
             data: chart_data,
             tooltip: {
                 headerFormat: '<em>Score of {point.key}</em><br/>'

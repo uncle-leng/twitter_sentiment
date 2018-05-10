@@ -17,10 +17,21 @@ $(function() {
                   backgroundColor: null
               },
               title: {
-                  text: "Sentiment with Social Features"
+                  text: "Sentiment with Social Features",
+                  style:{
+                      color:'white',
+                      fontSize:'24px'
+                  }
+
               },
               subtitle: {
-                  text: "Source: Aurin"
+                  text: "Source: Aurin",
+                  style:{
+                      fontSize:'16px',
+                      color:'white'
+
+                  }
+
               },
               xAxis: [
                   {
@@ -34,7 +45,8 @@ $(function() {
                       ],
                       labels: {
                           style: {
-                              color: 'black'
+                              color: 'black',
+                              fontSize:'20px'
                           }
                       },
                       crosshair: true
@@ -62,13 +74,15 @@ $(function() {
                       title: {
                           text: "Sentiment Scores",
                           style: {
-                              color: Highcharts.getOptions().colors[1]
+                              color: Highcharts.getOptions().colors[1],
+                              fontSize:'20px'
                           }
                       },
                       labels: {
                           format: "{value}",
                           style: {
-                              color: Highcharts.getOptions().colors[1]
+                              color: 'white',
+                              fontSize:'16px'
                           }
                       },
                       min: 0.54
@@ -97,7 +111,8 @@ $(function() {
                       // 5th yAxis
                       labels: {
                           style: {
-                              color: Highcharts.getOptions().colors[1]
+                              color: Highcharts.getOptions().colors[1],
+                              fontSize:'18px'
                           }
                       },
                       opposite: true,
@@ -132,6 +147,7 @@ $(function() {
                   layout: "vertical",
                   align: "left",
                   x: 80,
+                  fontSize:'20px',
                   verticalAlign: "top",
                   y: 55,
                   floating: true,
@@ -149,7 +165,7 @@ $(function() {
                       },
                   },
                   {
-                      name: "Bachelor",
+                      name: "Bachelor's degree",
                       yAxis:0,
                       type: "spline",
                       data: sentiment_data[1],
